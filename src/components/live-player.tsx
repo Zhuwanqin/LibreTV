@@ -136,7 +136,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
         video.removeEventListener('error', onError);
         nativeCleanup = null;
         if (disposed || destroyed) return;
-        if (allowProxyFallback && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
+        if (allowProxyFallback && process.env.LIBRETV_DIRECT_ONLY !== '1' && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
           showHint('直连失败，改用代理重试...');
           setupNative(video, proxyUrl(url), false, failMessage);
           return;
@@ -200,7 +200,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
         }
         if (!playbackStarted) {
           if (
-            stage === 'direct' &&
+            stage === 'direct' && process.env.LIBRETV_DIRECT_ONLY !== '1' &&
             !mediaUrl.startsWith(STREAM_PROXY_PREFIX) &&
             (data.details === 'manifestLoadError' || data.type === Hls.ErrorTypes.NETWORK_ERROR)
           ) {
@@ -264,7 +264,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
       player.load();
       player.on(Mpegts.Events.ERROR, (errType: string) => {
         if (disposed || destroyed) return;
-        if (!playbackStarted && allowProxyFallback && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
+        if (!playbackStarted && allowProxyFallback && process.env.LIBRETV_DIRECT_ONLY !== '1' && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
           showHint('直连失败，改用代理重试...');
           void setupFlv(video, proxyUrl(url), false);
           return;
