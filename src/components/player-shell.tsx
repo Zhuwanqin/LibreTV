@@ -436,7 +436,7 @@ export function PlayerShell({
           // 前两次重试保留直连；达到退避阈值或清单级错误时升级为代理形式
           // （同源 cookie 鉴权，规避 CORS/防盗链/分片被拒）
           if (
-            allowProxyFallback &&
+            allowProxyFallback && process.env.LIBRETV_DIRECT_ONLY !== '1' &&
             !mediaUrl.startsWith('/api/proxy') &&
             (decision.attempt >= 2 || data.details === 'manifestLoadError')
           ) {
